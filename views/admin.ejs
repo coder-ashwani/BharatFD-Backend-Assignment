@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+</head>
+<body>
+    <div class="admin-container">
+        <h1>FAQ Administration Panel</h1>
+        
+        <div class="admin-buttons">
+            <a href="/api/faqs" class="admin-btn view-btn">
+                <i class="fas fa-eye"></i>
+                View All FAQs
+            </a>
+            
+            <button class="admin-btn add-btn" onclick="showAddFaqForm()">
+                <i class="fas fa-plus"></i>
+                Add New FAQ
+            </button>
+            
+            <button class="admin-btn delete-btn" onclick="showDeleteFaqForm()">
+                <i class="fas fa-trash"></i>
+                Delete FAQ
+            </button>
+        </div>
+
+        <!-- Add FAQ Form Modal -->
+        <div id="addFaqModal" class="modal">
+            <div class="modal-content">
+                <h2>Add New FAQ</h2>
+                <form id="addFaqForm">
+                    <div class="form-group">
+                        <label for="question">Question:</label>
+                        <textarea id="question" name="question" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="answer">Answer:</label>
+                        <textarea id="answer" name="answer" required></textarea>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn">Add FAQ</button>
+                        <button type="button" class="cancel-btn" onclick="hideAddFaqForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Delete FAQ Form Modal -->
+        <div id="deleteFaqModal" class="modal">
+            <div class="modal-content">
+                <h2>Delete FAQ</h2>
+                <form id="deleteFaqForm">
+                    <div class="form-group">
+                        <label for="faqId">FAQ ID:</label>
+                        <input type="text" id="faqId" name="faqId" required>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn">Delete FAQ</button>
+                        <button type="button" class="cancel-btn" onclick="hideDeleteFaqForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+        }
+
+        .admin-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .admin-btn {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .admin-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .view-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .add-btn {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .delete-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            margin: 2rem auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-group textarea,
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .form-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        .submit-btn,
+        .cancel-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .cancel-btn {
+            background-color: #f44336;
+            color: white;
+        }
+    </style>
+
+    <script>
+        function showAddFaqForm() {
+            document.getElementById('addFaqModal').style.display = 'block';
+            // Set default language value
+            document.getElementById('language').value = 'eng';
+        }
+
+        function hideAddFaqForm() {
+            document.getElementById('addFaqModal').style.display = 'none';
+        }
+
+        function showDeleteFaqForm() {
+            document.getElementById('deleteFaqModal').style.display = 'block';
+        }
+
+        function hideDeleteFaqForm() {
+            document.getElementById('deleteFaqModal').style.display = 'none';
+        }
+
+        // Add FAQ form submission
+        document.getElementById('addFaqForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const question = document.getElementById('question').value;
+            const answer = document.getElementById('answer').value;
+
+            try {
+                const response = await fetch('/api/faqs', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ question, answer }),
+                });
+
+                if (response.ok) {
+                    alert('FAQ added successfully!');
+                    hideAddFaqForm();
+                    document.getElementById('addFaqForm').reset();
+                } else {
+                    alert('Failed to add FAQ');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while adding the FAQ');
+            }
+        });
+
+        // Delete FAQ form submission
+        document.getElementById('deleteFaqForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const faqId = document.getElementById('faqId').value;
+
+            try {
+                const response = await fetch(`/api/faqs/${faqId}`, {
+                    method: 'DELETE',
+                });
+
+                if (response.ok) {
+                    alert('FAQ deleted successfully!');
+                    hideDeleteFaqForm();
+                    document.getElementById('deleteFaqForm').reset();
+                } else {
+                    alert('Failed to delete FAQ');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while deleting the FAQ');
+            }
+        });
+    </script>
+</body>
+</html>

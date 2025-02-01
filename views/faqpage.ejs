@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQs</title>
+</head>
+<body>
+    <h1 style="text-align: center; color: #333; font-size: 3rem; margin: 2rem 0; text-transform: uppercase; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); font-family: 'Arial', sans-serif;">✨ All FAQs ✨</h1>
+
+    <section class="faq-container">
+        <% if (faqs && faqs.length > 0) { %>
+            <% faqs.forEach(faq => { %>
+                <article class="faq-item">
+                    <h3 class="question"><strong>Q:</strong> <%- faq.question %></h3>
+                    <p class="answer"><strong>A:</strong> <%- faq.answer %></p>
+                </article>
+            <% }); %>
+        <% } else { %>
+            <p class="no-faqs">❌ No FAQs available</p>
+        <% } %>
+    </section>
+
+    <style>
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .faq-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            /* border-radius: 20px; */
+            border: 2px solid #090909;
+            border-radius: 20px;
+            background-color: #e4adad;
+        }
+        .question {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .answer {
+            color: #050000;
+            margin-left: 20px;
+        }
+        .no-faqs {
+            text-align: center;
+            font-size: 1.2em;
+            color: #888;
+        }
+    </style>
+</body>
+</html>
